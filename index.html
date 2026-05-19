@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Discover Dashboard</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+    color:#222;
+}
+
+/* NAVBAR */
+
+.navbar{
+    background:#4f46e5;
+    color:white;
+    padding:15px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:bold;
+}
+
+.nav-links{
+    display:flex;
+    gap:20px;
+}
+
+.nav-links a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+/* HEADER */
+
+.hero{
+    padding:40px 30px;
+}
+
+.hero h1{
+    font-size:40px;
+    margin-bottom:15px;
+}
+
+.search-bar{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+}
+
+.search-bar input{
+    flex:1;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+}
+
+.search-bar button{
+    background:#4f46e5;
+    color:white;
+    border:none;
+    padding:14px 22px;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+/* CATEGORY */
+
+.categories{
+    display:flex;
+    gap:15px;
+    padding:0 30px 30px;
+    flex-wrap:wrap;
+}
+
+.category{
+    background:white;
+    padding:12px 18px;
+    border-radius:30px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.category:hover{
+    transform:translateY(-2px);
+    background:#4f46e5;
+    color:white;
+}
+
+/* CARD GRID */
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+    padding:0 30px 40px;
+}
+
+.card{
+    background:white;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 5px 15px rgba(0,0,0,0.08);
+    transition:0.2s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+.card img{
+    width:100%;
+    height:160px;
+    object-fit:cover;
+}
+
+.card-content{
+    padding:18px;
+}
+
+.card-title{
+    font-size:20px;
+    margin-bottom:10px;
+    font-weight:bold;
+}
+
+.card-desc{
+    color:#666;
+    margin-bottom:15px;
+}
+
+.play-btn{
+    background:#22c55e;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+/* FOOTER */
+
+.footer{
+    text-align:center;
+    padding:20px;
+    color:#777;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+    <div class="logo">QuizDash</div>
+
+    <div class="nav-links">
+        <a href="#">Discover</a>
+        <a href="#">My Sets</a>
+        <a href="#">Favorites</a>
+        <a href="#">Profile</a>
+    </div>
+</div>
+
+<!-- HERO -->
+
+<div class="hero">
+    <h1>Discover Learning Games</h1>
+
+    <div class="search-bar">
+        <input type="text" placeholder="Search question sets...">
+        <button>Search</button>
+    </div>
+</div>
+
+<!-- CATEGORIES -->
+
+<div class="categories">
+    <div class="category">Math</div>
+    <div class="category">Science</div>
+    <div class="category">History</div>
+    <div class="category">English</div>
+    <div class="category">Geography</div>
+    <div class="category">Coding</div>
+</div>
+
+<!-- GRID -->
+
+<div class="grid">
+
+    <div class="card">
+        <img src="https://picsum.photos/400/200?1">
+
+        <div class="card-content">
+            <div class="card-title">Math Challenge</div>
+            <div class="card-desc">
+                Practice algebra and equations.
+            </div>
+
+            <button class="play-btn">Play</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <img src="https://picsum.photos/400/200?2">
+
+        <div class="card-content">
+            <div class="card-title">Science Trivia</div>
+            <div class="card-desc">
+                Explore biology and chemistry.
+            </div>
+
+            <button class="play-btn">Play</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <img src="https://picsum.photos/400/200?3">
+
+        <div class="card-content">
+            <div class="card-title">World History</div>
+            <div class="card-desc">
+                Learn major historical events.
+            </div>
+
+            <button class="play-btn">Play</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+
+<div class="footer">
+    © 2026 QuizDash
+</div>
+
+</body>
+</html>
