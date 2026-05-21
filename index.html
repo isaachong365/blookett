@@ -1,259 +1,337 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Discover Dashboard</title>
-
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, sans-serif;
-}
-
-body{
-    background:#f4f7fb;
-    color:#222;
-}
-
-/* NAVBAR */
-
-.navbar{
-    background:#4f46e5;
-    color:white;
-    padding:15px 30px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-
-.logo{
-    font-size:24px;
-    font-weight:bold;
-}
-
-.nav-links{
-    display:flex;
-    gap:20px;
-}
-
-.nav-links a{
-    color:white;
-    text-decoration:none;
-    font-weight:bold;
-}
-
-/* HEADER */
-
-.hero{
-    padding:40px 30px;
-}
-
-.hero h1{
-    font-size:40px;
-    margin-bottom:15px;
-}
-
-.search-bar{
-    display:flex;
-    gap:10px;
-    margin-top:20px;
-}
-
-.search-bar input{
-    flex:1;
-    padding:14px;
-    border:none;
-    border-radius:12px;
-    font-size:16px;
-}
-
-.search-bar button{
-    background:#4f46e5;
-    color:white;
-    border:none;
-    padding:14px 22px;
-    border-radius:12px;
-    cursor:pointer;
-    font-size:16px;
-}
-
-/* CATEGORY */
-
-.categories{
-    display:flex;
-    gap:15px;
-    padding:0 30px 30px;
-    flex-wrap:wrap;
-}
-
-.category{
-    background:white;
-    padding:12px 18px;
-    border-radius:30px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.08);
-    cursor:pointer;
-    transition:0.2s;
-}
-
-.category:hover{
-    transform:translateY(-2px);
-    background:#4f46e5;
-    color:white;
-}
-
-/* CARD GRID */
-
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:20px;
-    padding:0 30px 40px;
-}
-
-.card{
-    background:white;
-    border-radius:20px;
-    overflow:hidden;
-    box-shadow:0 5px 15px rgba(0,0,0,0.08);
-    transition:0.2s;
-}
-
-.card:hover{
-    transform:translateY(-5px);
-}
-
-.card img{
-    width:100%;
-    height:160px;
-    object-fit:cover;
-}
-
-.card-content{
-    padding:18px;
-}
-
-.card-title{
-    font-size:20px;
-    margin-bottom:10px;
-    font-weight:bold;
-}
-
-.card-desc{
-    color:#666;
-    margin-bottom:15px;
-}
-
-.play-btn{
-    background:#22c55e;
-    color:white;
-    border:none;
-    padding:10px 16px;
-    border-radius:10px;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-/* FOOTER */
-
-.footer{
-    text-align:center;
-    padding:20px;
-    color:#777;
-}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold Clicker Empire</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1e1e24;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            user-select: none;
+            padding: 20px 0;
+        }
+        .game-container {
+            background: #2a2a35;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+            width: 380px;
+        }
+        h1 {
+            margin-top: 0;
+            color: #4caf50;
+        }
+        .score-display {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 20px 0 5px 0;
+            color: #ffd700;
+        }
+        .gps-display {
+            font-size: 1rem;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+        .click-btn {
+            background: #4caf50;
+            border: none;
+            color: white;
+            padding: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            cursor: pointer;
+            box-shadow: 0 6px #388e3c;
+            transition: all 0.1s;
+            outline: none;
+        }
+        .click-btn:active {
+            box-shadow: 0 2px #388e3c;
+            transform: translateY(4px);
+        }
+        .section-title {
+            margin-top: 25px;
+            text-align: left;
+            border-bottom: 2px solid #3a3a4a;
+            padding-bottom: 5px;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        .shop, .achievements {
+            max-height: 240px;
+            overflow-y: auto;
+            padding-right: 5px;
+            text-align: left;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #2a2a35;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 3px;
+        }
+        .shop-item, .ach-item {
+            background: #3a3a4a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .buy-btn {
+            background: #2196f3;
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .buy-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            color: #aaa;
+        }
+        .ach-item {
+            opacity: 0.3;
+            justify-content: flex-start;
+        }
+        .ach-item.unlocked {
+            opacity: 1;
+            background: #388e3c;
+            border: 1px solid #4caf50;
+        }
+        .ach-icon {
+            font-size: 1.5rem;
+            margin-right: 12px;
+        }
+        .ach-title {
+            font-weight: bold;
+        }
+        .ach-desc {
+            font-size: 0.8rem;
+            color: #ddd;
+        }
+        .system-btn {
+            background: #e056fd;
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+            font-size: 0.8rem;
+        }
+        .system-btn:hover {
+            background: #be2edd;
+        }
+    </style>
 </head>
-
 <body>
 
-<!-- NAVBAR -->
+<div class="game-container">
+    <h1>Gold Clicker</h1>
+    <div class="score-display" id="gold-display">0 Gold</div>
+    <div class="gps-display" id="gps-display">0 gold / sec</div>
+    
+    <button class="click-btn" id="click-trigger">CLICK!</button>
 
-<div class="navbar">
-    <div class="logo">QuizDash</div>
+    <div class="section-title">Upgrades</div>
+    <div class="shop" id="shop-container"></div>
 
-    <div class="nav-links">
-        <a href="#">Discover</a>
-        <a href="#">My Sets</a>
-        <a href="#">Favorites</a>
-        <a href="#">Profile</a>
-    </div>
+    <div class="section-title">Achievements</div>
+    <div class="achievements" id="ach-container"></div>
+
+    <button class="system-btn" id="reset-btn">Reset Save Data</button>
 </div>
 
-<!-- HERO -->
+<script>
+    let gold = 0;
+    let totalGoldEarned = 0;
+    let gps = 0;
 
-<div class="hero">
-    <h1>Discover Learning Games</h1>
+    const upgrades = {
+        miner: { name: "Auto-Miner", count: 0, baseCost: 15, cost: 15, power: 1 },
+        drill: { name: "Laser Drill", count: 0, baseCost: 100, cost: 100, power: 5 },
+        factory: { name: "Gold Factory", count: 0, baseCost: 1100, cost: 1100, power: 40 },
+        alchemy: { name: "Alchemy Lab", count: 0, baseCost: 12000, cost: 12000, power: 260 },
+        quantum: { name: "Quantum Synthesizer", count: 0, baseCost: 130000, cost: 130000, power: 1400 }
+    };
 
-    <div class="search-bar">
-        <input type="text" placeholder="Search question sets...">
-        <button>Search</button>
-    </div>
-</div>
+    const achievements = [
+        { id: 'click_10', title: "First Gold Rush", desc: "Earn 10 gold total.", unlocked: false, icon: "🪙", check: () => totalGoldEarned >= 10 },
+        { id: 'gold_1000', title: "Wealthy Prospector", desc: "Earn 1,000 gold total.", unlocked: false, icon: "💰", check: () => totalGoldEarned >= 1000 },
+        { id: 'gold_100k', title: "Millionaire Mindset", desc: "Earn 100,000 gold total.", unlocked: false, icon: "👑", check: () => totalGoldEarned >= 100000 },
+        { id: 'gps_10', title: "Getting Efficient", desc: "Reach 10 Gold per second.", unlocked: false, icon: "⚡", check: () => gps >= 10 },
+        { id: 'gps_500', title: "Industrial Age", desc: "Reach 500 Gold per second.", unlocked: false, icon: "🏭", check: () => gps >= 500 },
+        { id: 'buy_all', title: "Master Tycoon", desc: "Own at least one of every upgrade.", unlocked: false, icon: "🏆", check: () => Object.values(upgrades).every(up => up.count > 0) }
+    ];
 
-<!-- CATEGORIES -->
+    const goldDisplay = document.getElementById('gold-display');
+    const gpsDisplay = document.getElementById('gps-display');
+    const clickBtn = document.getElementById('click-trigger');
+    const shopContainer = document.getElementById('shop-container');
+    const achContainer = document.getElementById('ach-container');
+    const resetBtn = document.getElementById('reset-btn');
 
-<div class="categories">
-    <div class="category">Math</div>
-    <div class="category">Science</div>
-    <div class="category">History</div>
-    <div class="category">English</div>
-    <div class="category">Geography</div>
-    <div class="category">Coding</div>
-</div>
+    function buildUI() {
+        shopContainer.innerHTML = '';
+        Object.keys(upgrades).forEach(key => {
+            const up = upgrades[key];
+            const itemHtml = `
+                <div class="shop-item">
+                    <div>
+                        <strong>${up.name}</strong> (+${up.power} GPS)<br>
+                        <small>Owned: <span id="${key}-count">0</span></small>
+                    </div>
+                    <button class="buy-btn" id="buy-${key}">Cost: ${up.cost}</button>
+                </div>`;
+            shopContainer.insertAdjacentHTML('beforeend', itemHtml);
+            document.getElementById(`buy-${key}`).addEventListener('click', () => buyUpgrade(key));
+        });
 
-<!-- GRID -->
+        achContainer.innerHTML = '';
+        achievements.forEach(ach => {
+            const achHtml = `
+                <div class="ach-item" id="ach-${ach.id}">
+                    <div class="ach-icon">${ach.icon}</div>
+                    <div>
+                        <div class="ach-title">${ach.title}</div>
+                        <div class="ach-desc">${ach.desc}</div>
+                    </div>
+                </div>`;
+            achContainer.insertAdjacentHTML('beforeend', achHtml);
+        });
+    }
 
-<div class="grid">
+    function saveGame() {
+        const gameSave = {
+            gold: gold,
+            totalGoldEarned: totalGoldEarned,
+            upgrades: {}
+        };
+        Object.keys(upgrades).forEach(key => {
+            gameSave.upgrades[key] = {
+                count: upgrades[key].count,
+                cost: upgrades[key].cost
+            };
+        });
+        localStorage.setItem('clickerEmpireSaveMerged', JSON.stringify(gameSave));
+    }
 
-    <div class="card">
-        <img src="https://picsum.photos/400/200?1">
+    function loadGame() {
+        const savedData = localStorage.getItem('clickerEmpireSaveMerged');
+        if (savedData) {
+            const parsed = JSON.parse(savedData);
+            gold = parsed.gold || 0;
+            totalGoldEarned = parsed.totalGoldEarned || 0;
+            Object.keys(upgrades).forEach(key => {
+                if (parsed.upgrades && parsed.upgrades[key]) {
+                    upgrades[key].count = parsed.upgrades[key].count;
+                    upgrades[key].cost = parsed.upgrades[key].cost;
+                }
+            });
+            recalculateGPS();
+        }
+    }
 
-        <div class="card-content">
-            <div class="card-title">Math Challenge</div>
-            <div class="card-desc">
-                Practice algebra and equations.
-            </div>
+    function recalculateGPS() {
+        gps = 0;
+        Object.keys(upgrades).forEach(key => {
+            gps += upgrades[key].count * upgrades[key].power;
+        });
+    }
 
-            <button class="play-btn">Play</button>
-        </div>
-    </div>
+    function updateUI() {
+        goldDisplay.textContent = `${Math.floor(gold).toLocaleString()} Gold`;
+        gpsDisplay.textContent = `${gps.toLocaleString()} gold / sec`;
+        
+        Object.keys(upgrades).forEach(key => {
+            const up = upgrades[key];
+            const btn = document.getElementById(`buy-${key}`);
+            const countSpan = document.getElementById(`${key}-count`);
+            if (btn && countSpan) {
+                btn.textContent = `Cost: ${up.cost.toLocaleString()}`;
+                btn.disabled = gold < up.cost;
+                countSpan.textContent = up.count;
+            }
+        });
 
-    <div class="card">
-        <img src="https://picsum.photos/400/200?2">
+        achievements.forEach(ach => {
+            if (!ach.unlocked && ach.check()) {
+                ach.unlocked = true;
+            }
+            const el = document.getElementById(`ach-${ach.id}`);
+            if (el && ach.unlocked) {
+                el.classList.add('unlocked');
+            }
+        });
+    }
 
-        <div class="card-content">
-            <div class="card-title">Science Trivia</div>
-            <div class="card-desc">
-                Explore biology and chemistry.
-            </div>
+    clickBtn.addEventListener('click', () => {
+        gold += 1;
+        totalGoldEarned += 1;
+        updateUI();
+    });
 
-            <button class="play-btn">Play</button>
-        </div>
-    </div>
+    function buyUpgrade(key) {
+        const up = upgrades[key];
+        if (gold >= up.cost) {
+            gold -= up.cost;
+            up.count++;
+            up.cost = Math.floor(up.baseCost * Math.pow(1.15, up.count));
+            recalculateGPS();
+            updateUI();
+            saveGame();
+        }
+    }
 
-    <div class="card">
-        <img src="https://picsum.photos/400/200?3">
+    resetBtn.addEventListener('click', () => {
+        if (confirm("Reset all game progress?")) {
+            localStorage.removeItem('clickerEmpireSaveMerged');
+            gold = 0;
+            totalGoldEarned = 0;
+            gps = 0;
+            Object.keys(upgrades).forEach(key => {
+                upgrades[key].count = 0;
+                upgrades[key].cost = upgrades[key].baseCost;
+            });
+            achievements.forEach(ach => ach.unlocked = false);
+            buildUI();
+            updateUI();
+        }
+    });
 
-        <div class="card-content">
-            <div class="card-title">World History</div>
-            <div class="card-desc">
-                Learn major historical events.
-            </div>
+    buildUI();
+    loadGame();
+    updateUI();
 
-            <button class="play-btn">Play</button>
-        </div>
-    </div>
+    setInterval(() => {
+        if (gps > 0) {
+            const generated = gps / 10;
+            gold += generated;
+            totalGoldEarned += generated;
+            updateUI();
+        }
+    }, 100);
 
-</div>
-
-<!-- FOOTER -->
-
-<div class="footer">
-    © 2026 QuizDash
-</div>
+    setInterval(saveGame, 15000);
+</script>
 
 </body>
 </html>
