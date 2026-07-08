@@ -291,3 +291,202 @@
 
     clickBtn.addEventListener('click', (e) => {
         gold += 1;
+<!-- Insert this completed script block directly before your closing </body> tag -->
+<script>
+    let gold = 0;
+    let totalGoldEarned = 0;
+    let gps = 0;
+    let lastTick = Date.now();
+
+    const upgrades = {
+        miner: { name: "Auto-Miner", count: 0, baseCost: 15, cost: 15, power: 1 },
+        drill: { name: "Laser Drill", count: 0, baseCost: 100, cost: 100, power: 5 },
+        factory: { name: "Gold Factory", count: 0, baseCost: 5000, cost: 5000, power: 40 },
+        alchemy: { name: "Alchemy Lab", count: 0, baseCost: 12000, cost: 12000, power: 260 },
+        quantum: { name: "Quantum Synthesizer", count: 0, baseCost: 140000, cost: 140000, power: 1400 }
+    };
+
+    const achievements = [
+        { id: 'click_10', title: "First Gold Rush", desc: "Earn 10 gold total.", unlocked: false, icon: "🪙", check: () => totalGoldEarned >= 10 },
+        { id: 'gold_1000', title: "Wealthy Prospector", desc: "Earn 1,000 gold total.", unlocked: false, icon: "💰", check: () => totalGoldEarned >= 1000 },
+        { id: 'gold_100k', title: "Millionaire Mindset", desc: "Earn 100,000 gold total.", unlocked: false, icon: "👑", check: () => totalGoldEarned >= 100000 },
+        { id: 'gps_10', title: "Getting Efficient", desc: "Reach 10 Gold per second.", unlocked: false, icon: "⚡", check: () => gps >= 10 },
+        { id: 'gps_500', title: "Industrial Age", desc: "Reach 500 Gold per second.", unlocked: false, icon: "🏭", check: () => gps >= 500 },
+        { id: 'buy_all', title: "Master Tycoon", desc: "Own at least one of every upgrade.", unlocked: false, icon: "🏆", check: () => Object.values(upgrades).every(up => up.count > 0) }
+    ];
+
+    const goldDisplay = document.getElementById('gold-display');
+    const gpsDisplay = document.getElementById('gps-display');
+    const clickBtn = document.getElementById('click-trigger');
+    const clickContainer = document.getElementById('click-container');
+    const shopContainer = document.getElementById('shop-container');
+    const achContainer = document.getElementById('ach-container');
+    const resetBtn = document.getElementById('reset-btn');
+
+    function formatNum(num) {
+        return Math.floor(num).toLocaleString();
+    }
+
+    function buildUI() {
+        shopContainer.innerHTML = '';
+        Object.keys(upgrades).forEach(key => {
+            const up = upgrades[key];
+            const itemHtml = `
+                <div class="shop-item">
+                    <div>
+                        <strong>${up.name}</strong> (+${up.power} GPS)<br>
+                        <small>Owned: <span id="${key}-count">${up.count}</span></small>
+                    </div>
+                    <button class="buy-btn" id="buy-${key}">Cost: ${formatNum(up.cost)}</button>
+                </div>`;
+            shopContainer.insertAdjacentHTML('beforeend', itemHtml);
+            document.getElementById(`buy-${key}`).addEventListener('click', () => buyUpgrade(key));
+        });
+
+        achContainer.innerHTML = '';
+        achievements.forEach(ach => {
+            const statusClass = ach.unlocked ? 'ach-item unlocked' : 'ach-item';
+            const achHtml = `
+                <div class="${statusClass}" id="ach-${ach.id}">
+                    <div class="ach-icon">${ach.icon}</div>
+                    <div>
+                        <div class="ach-title">${ach.title}</div>
+                        <div class="ach-desc">${ach.desc}</div>
+                    </div>
+                </div>`;
+            achContainer.insertAdjacentHTML('beforeend', achHtml);
+        });
+    }
+
+    function updateUI() {
+        goldDisplay.textContent = `${formatNum(gold)} Gold`;
+        gpsDisplay.textContent = `${formatNum(gps)} gold / sec`;
+        
+        Object.keys(upgrades).forEach(key => {
+            const up = upgrades[key];
+            const btn = document.getElementById(`buy-${key}`);
+            const countSpan = document.getElementById(`${key}-count`);
+            if (btn && countSpan) {
+                btn.textContent = `Cost: ${formatNum(up.cost)}`;
+                btn.disabled = gold < up.cost;
+                countSpan.textContent = up.count;
+            }
+        });
+    }
+
+    function updateGPS() {
+        gps = Object.values(upgrades).reduce((sum, up) => sum + (up.count * up.power), 0);
+    }
+
+    function buyUpgrade(key) {
+        const up = upgrades[key];
+        if (gold >= up.cost) {
+            gold -= up.cost;
+            up.count++;
+            up.cost = Math.floor(up.baseCost * Math.pow(1.15, up.count));
+            updateGPS();
+            updateUI();
+            checkAchievements();
+        }
+    }
+
+    function checkAchievements() {
+        achievements.forEach(ach => {
+            if (!ach.unlocked && ach.check()) {
+                ach.unlocked = true;
+                const el = document.getElementById(`ach-${ach.id}`);
+                if (el) el.classList.add('unlocked');
+            }
+        });
+    }
+
+    clickBtn.addEventListener('click', (e) => {
+        gold += 1;
+        totalGoldEarned += 1;
+        updateUI();
+        checkAchievements();
+        createFloatingText(e);
+    });
+
+    function createFloatingText(e) {
+        const text = document.createElement('div');
+        text.className = 'floating-text';
+        text.textContent = '+1';
+        const containerRect = clickContainer.getBoundingClientRect();
+        text.style.left = `${e.clientX - containerRect.left}px`;
+        text.style.top = `${e.clientY - containerRect.top}px`;
+        clickContainer.appendChild(text);
+        setTimeout(() => text.remove(), 800);
+    }
+
+    function gameLoop() {
+        const now = Date.now();
+        const delta = (now - lastTick) / 1000;
+        lastTick = now;
+
+        if (gps > 0) {
+            const earned = gps * delta;
+            gold += earned;
+            totalGoldEarned += earned;
+            updateUI();
+            checkAchievements();
+        }
+        requestAnimationFrame(gameLoop);
+    }
+
+    function saveGame() {
+        const gameSave = {
+            gold,
+            totalGoldEarned,
+            lastTime: Date.now(),
+            upgrades: {}
+        };
+        Object.keys(upgrades).forEach(key => {
+            gameSave.upgrades[key] = { count: upgrades[key].count };
+        });
+        localStorage.setItem('clickerEmpireSave', JSON.stringify(gameSave));
+    }
+
+    function loadGame() {
+        const savedData = localStorage.getItem('clickerEmpireSave');
+        if (savedData) {
+            try {
+                const parsed = JSON.parse(savedData);
+                gold = parsed.gold || 0;
+                totalGoldEarned = parsed.totalGoldEarned || 0;
+                
+                Object.keys(upgrades).forEach(key => {
+                    if (parsed.upgrades && parsed.upgrades[key]) {
+                        upgrades[key].count = parsed.upgrades[key].count || 0;
+                        upgrades[key].cost = Math.floor(upgrades[key].baseCost * Math.pow(1.15, upgrades[key].count));
+                    }
+                });
+                
+                updateGPS();
+                
+                if (parsed.lastTime && gps > 0) {
+                    const offlineTime = (Date.now() - parsed.lastTime) / 1000;
+                    const offlineEarnings = gps * offlineTime;
+                    gold += offlineEarnings;
+                    totalGoldEarned += offlineEarnings;
+                    alert(`Welcome back! You earned ${formatNum(offlineEarnings)} gold while away!`);
+                }
+            } catch(e) { console.error("Error loading save", e); }
+        }
+        buildUI();
+        updateUI();
+        checkAchievements();
+        lastTick = Date.now();
+        requestAnimationFrame(gameLoop);
+    }
+
+    resetBtn.addEventListener('click', () => {
+        if (confirm("Reset all progress?")) {
+            localStorage.removeItem('clickerEmpireSave');
+            location.reload();
+        }
+    });
+
+    setInterval(saveGame, 10000);
+    window.addEventListener('load', loadGame);
+</script>
