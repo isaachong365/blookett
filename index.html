@@ -24,6 +24,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             text-align: center;
             width: 380px;
+            position: relative;
         }
         h1 {
             margin-top: 0;
@@ -39,6 +40,11 @@
             font-size: 1rem;
             color: #aaa;
             margin-bottom: 20px;
+        }
+        .click-btn-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 10px;
         }
         .click-btn {
             background: #4caf50;
@@ -58,6 +64,18 @@
         .click-btn:active {
             box-shadow: 0 2px #388e3c;
             transform: translateY(4px);
+        }
+        .floating-text {
+            position: absolute;
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 1.2rem;
+            pointer-events: none;
+            animation: floatUp 0.8s ease-out forwards;
+        }
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-40px); }
         }
         .section-title {
             margin-top: 25px;
@@ -109,6 +127,7 @@
         .ach-item {
             opacity: 0.3;
             justify-content: flex-start;
+            transition: all 0.3s;
         }
         .ach-item.unlocked {
             opacity: 1;
@@ -149,7 +168,9 @@
     <div class="score-display" id="gold-display">0 Gold</div>
     <div class="gps-display" id="gps-display">0 gold / sec</div>
     
-    <button class="click-btn" id="click-trigger">CLICK!</button>
+    <div class="click-btn-container" id="click-container">
+        <button class="click-btn" id="click-trigger">CLICK!</button>
+    </div>
 
     <div class="section-title">Upgrades</div>
     <div class="shop" id="shop-container"></div>
@@ -164,13 +185,14 @@
     let gold = 0;
     let totalGoldEarned = 0;
     let gps = 0;
+    let lastTick = Date.now();
 
     const upgrades = {
         miner: { name: "Auto-Miner", count: 0, baseCost: 15, cost: 15, power: 1 },
         drill: { name: "Laser Drill", count: 0, baseCost: 100, cost: 100, power: 5 },
         factory: { name: "Gold Factory", count: 0, baseCost: 5000, cost: 5000, power: 40 },
         alchemy: { name: "Alchemy Lab", count: 0, baseCost: 12000, cost: 12000, power: 260 },
-        quantum: { name: "Quantum Synthesizer", count: 0, baseCost: 140000, cost: 10000, power: 1400 }
+        quantum: { name: "Quantum Synthesizer", count: 0, baseCost: 140000, cost: 140000, power: 1400 }
     };
 
     const achievements = [
@@ -185,9 +207,14 @@
     const goldDisplay = document.getElementById('gold-display');
     const gpsDisplay = document.getElementById('gps-display');
     const clickBtn = document.getElementById('click-trigger');
+    const clickContainer = document.getElementById('click-container');
     const shopContainer = document.getElementById('shop-container');
     const achContainer = document.getElementById('ach-container');
     const resetBtn = document.getElementById('reset-btn');
+
+    function formatNum(num) {
+        return Math.floor(num).toLocaleString();
+    }
 
     function buildUI() {
         shopContainer.innerHTML = '';
@@ -197,9 +224,9 @@
                 <div class="shop-item">
                     <div>
                         <strong>${up.name}</strong> (+${up.power} GPS)<br>
-                        <small>Owned: <span id="${key}-count">0</span></small>
+                        <small>Owned: <span id="${key}-count">${up.count}</span></small>
                     </div>
-                    <button class="buy-btn" id="buy-${key}">Cost: ${up.cost}</button>
+                    <button class="buy-btn" id="buy-${key}">Cost: ${formatNum(up.cost)}</button>
                 </div>`;
             shopContainer.insertAdjacentHTML('beforeend', itemHtml);
             document.getElementById(`buy-${key}`).addEventListener('click', () => buyUpgrade(key));
@@ -207,8 +234,9 @@
 
         achContainer.innerHTML = '';
         achievements.forEach(ach => {
+            const statusClass = ach.unlocked ? 'ach-item unlocked' : 'ach-item';
             const achHtml = `
-                <div class="ach-item" id="ach-${ach.id}">
+                <div class="${statusClass}" id="ach-${ach.id}">
                     <div class="ach-icon">${ach.icon}</div>
                     <div>
                         <div class="ach-title">${ach.title}</div>
@@ -219,75 +247,25 @@
         });
     }
 
-    function saveGame() {
-        const gameSave = {
-            gold: gold,
-            totalGoldEarned: totalGoldEarned,
-            upgrades: {}
-        };
-        Object.keys(upgrades).forEach(key => {
-            gameSave.upgrades[key] = {
-                count: upgrades[key].count,
-                cost: upgrades[key].cost
-            };
-        });
-        localStorage.setItem('clickerEmpireSaveMerged', JSON.stringify(gameSave));
-    }
-
-    function loadGame() {
-        const savedData = localStorage.getItem('clickerEmpireSaveMerged');
-        if (savedData) {
-            const parsed = JSON.parse(savedData);
-            gold = parsed.gold || 0;
-            totalGoldEarned = parsed.totalGoldEarned || 0;
-            Object.keys(upgrades).forEach(key => {
-                if (parsed.upgrades && parsed.upgrades[key]) {
-                    upgrades[key].count = parsed.upgrades[key].count;
-                    upgrades[key].cost = parsed.upgrades[key].cost;
-                }
-            });
-            recalculateGPS();
-        }
-    }
-
-    function recalculateGPS() {
-        gps = 0;
-        Object.keys(upgrades).forEach(key => {
-            gps += upgrades[key].count * upgrades[key].power;
-        });
-    }
-
     function updateUI() {
-        goldDisplay.textContent = `${Math.floor(gold).toLocaleString()} Gold`;
-        gpsDisplay.textContent = `${gps.toLocaleString()} gold / sec`;
+        goldDisplay.textContent = `${formatNum(gold)} Gold`;
+        gpsDisplay.textContent = `${formatNum(gps)} gold / sec`;
         
         Object.keys(upgrades).forEach(key => {
             const up = upgrades[key];
             const btn = document.getElementById(`buy-${key}`);
             const countSpan = document.getElementById(`${key}-count`);
             if (btn && countSpan) {
-                btn.textContent = `Cost: ${up.cost.toLocaleString()}`;
+                btn.textContent = `Cost: ${formatNum(up.cost)}`;
                 btn.disabled = gold < up.cost;
                 countSpan.textContent = up.count;
             }
         });
-
-        achievements.forEach(ach => {
-            if (!ach.unlocked && ach.check()) {
-                ach.unlocked = true;
-            }
-            const el = document.getElementById(`ach-${ach.id}`);
-            if (el && ach.unlocked) {
-                el.classList.add('unlocked');
-            }
-        });
     }
 
-    clickBtn.addEventListener('click', () => {
-        gold += 1;
-        totalGoldEarned += 1;
-        updateUI();
-    });
+    function updateGPS() {
+        gps = Object.values(upgrades).reduce((sum, up) => sum + (up.count * up.power), 0);
+    }
 
     function buyUpgrade(key) {
         const up = upgrades[key];
@@ -295,43 +273,21 @@
             gold -= up.cost;
             up.count++;
             up.cost = Math.floor(up.baseCost * Math.pow(1.15, up.count));
-            recalculateGPS();
+            updateGPS();
             updateUI();
-            saveGame();
+            checkAchievements();
         }
     }
 
-    resetBtn.addEventListener('click', () => {
-        if (confirm("Reset all game progress?")) {
-            localStorage.removeItem('clickerEmpireSaveMerged');
-            gold = 0;
-            totalGoldEarned = 0;
-            gps = 0;
-            Object.keys(upgrades).forEach(key => {
-                upgrades[key].count = 0;
-                upgrades[key].cost = upgrades[key].baseCost;
-            });
-            achievements.forEach(ach => ach.unlocked = false);
-            buildUI();
-            updateUI();
-        }
-    });
+    function checkAchievements() {
+        achievements.forEach(ach => {
+            if (!ach.unlocked && ach.check()) {
+                ach.unlocked = true;
+                const el = document.getElementById(`ach-${ach.id}`);
+                if (el) el.classList.add('unlocked');
+            }
+        });
+    }
 
-    buildUI();
-    loadGame();
-    updateUI();
-
-    setInterval(() => {
-        if (gps > 0) {
-            const generated = gps / 10;
-            gold += generated;
-            totalGoldEarned += generated;
-            updateUI();
-        }
-    }, 100);
-
-    setInterval(saveGame, 15000);
-</script>
-
-</body>
-</html>
+    clickBtn.addEventListener('click', (e) => {
+        gold += 1;
